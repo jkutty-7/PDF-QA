@@ -17,11 +17,11 @@ openai.api_key = os.environ['OPENAI_API_KEY']
 
 co = cohere.Client(os.environ.get("COHERE_API_KEY"))
 
-def augment_multiple_query(query, model="gpt-3.5-turbo"):
+def augment_multiple_query(query, model="gpt-3.5-turbo-0125"):
     messages = [
         {
             "role": "system",
-            "content": "You are a helpful expert romanian document research assistant. Your users are asking questions about an legal doc. "
+            "content": "You are a helpful expert multilingual document research assistant. The users are asking questions about the document so you need to create questions which will actually related to the query. "
             "Suggest up to five additional related questions to help them find the information they need, for the provided question. "
             "Suggest only short questions without compound sentences. Suggest a variety of questions that cover different aspects of the topic."
             "Make sure they are complete questions, and that they are related to the original question."
@@ -107,12 +107,14 @@ if st.button("Get Answer"):
 
         # Generate answer using RAG
         messages = [
-            {
-                "role": "system",
-                "content": "You are an expert in understanding multilingual documents and providing answers. The answers should not be generated from prior knowledge, and if you don't know an answer, don't make up an answer."
-                           "You will be shown the user's question, along with relevant information from the document. Provide the user's answer using only this information and present it in a bullet-point list."
-            },
-            {"role": "user", "content": f"Question: {original_query}. \n Information: {key_texts}"}
+        {
+        "role": "system",
+        "content": "You are an expert in understanding multilingual documents and providing answers. Your responses should be based solely on the information provided in the document. If the answer is not present in the given information, you should explicitly state that the answer cannot be found in the document. Do not make up or fabricate any information."
+        },
+        {
+        "role": "user",
+        "content": f"Question: {original_query}. \n Information: {key_texts}"
+        }
         ]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0125",
