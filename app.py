@@ -109,7 +109,7 @@ if st.button("Get Answer"):
         messages = [
         {
         "role": "system",
-        "content": "You are an expert in understanding multilingual documents and providing answers. Your responses should be based solely on the information provided in the document. If the answer is not present in the given information, you should explicitly state that the answer cannot be found in the document. Do not make up or fabricate any information."
+        "content": "You are an expert in understanding multilingual documents and providing answers. Your responses should be based solely on the information provided in the document. If the answer is not present in the given information, you should explicitly state that the answer cannot be found in the document. Do not make up or fabricate any information.Give answers in bullet points"
         },
         {
         "role": "user",
