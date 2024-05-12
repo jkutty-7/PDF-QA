@@ -17,6 +17,20 @@ openai.api_key = os.environ['OPENAI_API_KEY']
 
 co = cohere.Client(os.environ.get("COHERE_API_KEY"))
 
+
+import re
+
+def get_collection_name(filename):
+  base_name = filename.split(".")[0]
+  
+  collection_name = re.sub(r"[^\w\-_]", "", base_name)
+  
+  collection_name = collection_name.lower()
+  
+  return collection_name
+
+
+
 def augment_multiple_query(query, model="gpt-3.5-turbo-0125"):
     messages = [
         {
@@ -39,11 +53,11 @@ def augment_multiple_query(query, model="gpt-3.5-turbo-0125"):
     return content
 
 # Set up Streamlit app
-st.title("Legal Document Question Answering")
+st.title("PDF Document Question Answering System")
 
 # Sidebar
 with st.sidebar:
-    st.subheader("Legal Document Upload")
+    st.subheader("PDF Document Upload")
     uploaded_file = st.file_uploader("Upload a legal document", type="pdf")
 
     if uploaded_file is not None:
@@ -68,7 +82,8 @@ with st.sidebar:
         # Initialize ChromaDB
         embedding_function = SentenceTransformerEmbeddingFunction()
         chroma_client = chromadb.Client()
-        collection_name = uploaded_file.name.split(".")[0].replace(" ","")  # Use the PDF file name as the collection name 
+        # collection_name = uploaded_file.name.split(".")[0].replace(" ","") 
+        collection_name = get_collection_name(uploaded_file.name)
         # Check if the collection exists, if not, create a new one
         chroma_collection = chroma_client.get_or_create_collection(collection_name, embedding_function=embedding_function)
         st.write(f"Created new collection: {collection_name}")
